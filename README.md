@@ -1,6 +1,4 @@
-# FIT50
-
-## A Fitness Tracking website
+# FIT 50
 
 #### Video Demo:  <https://youtu.be/LgwxvWA-zJI>
 
@@ -21,4 +19,3 @@
 #### The Sleep Tracker tab, which is the file “sleep.html”, asks the user about their quality of sleep, how many hours of sleep the user got and time and date and stores it in the database file under the “sleep records” table. The history of the user’s sleep is shown beside the form in a table. The page has a greenish theme to represent the peacefulness in good sleep.
 
 #### The Profile tab, which is the file “profile.html”, is where the users can see their latest BMI, their average daily calorie intake and their average weekly sleep hours. The user also has the freedom to change their username if they feel like and also change their password at any moment they want.
-
