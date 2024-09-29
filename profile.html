@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4" style="font-family: 'Poppins', sans-serif; color: #333;">User Profile</h1>
+
+        <div class="card shadow-lg" style="border-radius: 15px; background: #f9f9f9;">
+            <div class="card-body">
+                <h4 class="card-title" style="color: #2c3e50; font-weight: bold;">Profile Information</h4>
+                <hr class="my-4" style="border-top: 2px solid #3498db;">
+                <h5 style="color: #333;">Username: <strong>{{ username }}</strong></h5>
+                <h5 style="color: #333;">Latest BMI: <strong>{{ latest_bmi }}</strong></h5>
+                <h5 style="color: #333;">Average Calorie Intake per Day: <strong>{{ average_calories }} kcal</strong></h5>
+                <h5 style="color: #333;">Average Hours of Sleep per Week: <strong>{{ average_sleep }} hours</strong></h5>
+                <hr class="my-4" style="border-top: 2px solid #3498db;">
+
+                <div class="mt-4">
+                    <h4 class="text-primary">Change Username</h4>
+                    <form action="/profile" method="post" class="mb-4">
+                        <div class="form-group">
+                            <input type="text" name="new_username" class="form-control" placeholder="Enter new username" required>
+                        </div>
+                        <br>
+                        <button type="submit" name="change_username" value="true" class="btn btn-primary">Change Username</button>
+                    </form>
+                </div>
+
+                <hr class="my-4" style="border-top: 2px solid #3498db;">
+
+                <div class="mt-4">
+                    <h4 class="text-success">Change Password</h4>
+                    <form action="/profile" method="post">
+                        <div class="form-group">
+                            <input type="password" name="current_password" class="form-control" placeholder="Current password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="new_password" class="form-control" placeholder="New password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" name="confirmation" class="form-control" placeholder="Confirm new password" required>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-success">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="mt-3">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" style="border-radius: 5px; font-weight: bold;">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="text-center">
+            <a href="/" class="btn btn-secondary mt-3" style="border-radius: 5px;">Back to Home</a>
+        </div>
+    </div>
+
+    <!-- CSS for Modern Sporty Styling -->
+    <style>
+        body {
+            background-color: #ecf0f1;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #6bb9f0);
+            border: none;
+            color: white;
+            transition: background 0.3s ease;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #6bb9f0, #3498db);
+            color: white;
+        }
+        .btn-success {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            border: none;
+            color: white;
+            transition: background 0.3s ease;
+        }
+        .btn-success:hover {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        .form-control {
+            border-radius: 25px;
+            border: 1px solid #ced4da;
+            transition: border 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        .alert {
+            border-radius: 5px;
+        }
+    </style>
+
+{% endblock %}

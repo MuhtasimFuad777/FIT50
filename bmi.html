@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    BMI Calculator
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4 display-4" style="font-weight: 800; background: linear-gradient(45deg, #0056b3, #00c0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">BMI Calculator</h1>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <form action="/bmi" method="POST">
+                <div class="mb-3">
+                    <label for="mass" class="form-label" style="font-weight: 600;">Mass (kg)</label>
+                    <input type="number" class="form-control" id="mass" name="mass" required>
+                </div>
+                <div class="mb-3">
+                    <label for="height" class="form-label" style="font-weight: 600;">Height (cm)</label>
+                    <input type="number" class="form-control" id="height" name="height" required>
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label" style="font-weight: 600;">Age</label>
+                    <input type="number" class="form-control" id="age" name="age" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: linear-gradient(45deg, #007bff, #87cefa); border: none;">Calculate BMI</button>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            {% if bmi %}
+                <div class="mt-4 alert alert-info" style="border-radius: 10px; background-color: rgba(0, 123, 255, 0.2);">
+                    <strong style="font-weight: 700;">Your BMI:</strong> {{ bmi }}<br>
+                    <strong style="font-weight: 700;">Classification:</strong> {{ classification }}
+                </div>
+
+                <!-- Chart Container -->
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="bmiChart"></canvas>
+                </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                <script>
+                    const ctx = document.getElementById('bmiChart').getContext('2d');
+
+                    const bmiChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Underweight', 'Normal weight', 'Overweight', 'Obese'],
+                            datasets: [{
+                                label: 'BMI Classification',
+                                data: [18.5, 24.9, 29.9, 40],
+                                backgroundColor: [
+                                    'rgba(75, 192, 192, 1)',  // Underweight
+                                    'rgba(153, 102, 255, 1)', // Normal weight
+                                    'rgba(255, 159, 64, 1)',  // Overweight
+                                    'rgba(255, 99, 132, 1)'   // Obese
+                                ],
+                                borderWidth: 1,
+                                hoverBackgroundColor: [
+                                    'rgba(75, 192, 192, 0.5)',  // Underweight
+                                    'rgba(153, 102, 255, 0.5)', // Normal weight
+                                    'rgba(255, 159, 64, 0.5)',  // Overweight
+                                    'rgba(255, 99, 132, 0.5)'   // Obese
+                                ],
+                                hoverBorderColor: 'rgba(0, 123, 255, 1)'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: {
+                                duration: 1000,
+                                easing: 'easeOutBounce'
+                            },
+                            plugins: {
+                                tooltip: {
+                                    backgroundColor: '#333',
+                                    titleColor: '#fff',
+                                    bodyColor: '#fff',
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1,
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return `BMI: ${tooltipItem.raw}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'BMI',
+                                        font: {
+                                            family: 'Poppins',
+                                            size: 14,
+                                            weight: 'bold'
+                                        }
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            return `${value} BMI`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                </script>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Modern Sporty Styling -->
+<style>
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.1rem;
+    }
+    .btn-primary {
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0056b3, #007bff);
+        color: white;
+    }
+    .alert {
+        padding: 15px;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+</style>
+
+{% endblock %}

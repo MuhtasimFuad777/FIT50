@@ -1,0 +1,248 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Macro Tracker
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4" style="font-weight: 800; font-size: 3.5rem; background: linear-gradient(45deg, #9b0000, #ff7b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Macro Tracker</h1>
+
+    <div class="row">
+        <!-- Form to log macros -->
+        <div class="col-md-6 mb-4">
+            <div class="card mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="m-0">Log Your Macros</h4>
+                </div>
+                <div class="card-body">
+                    <form action="/macro" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-12">
+                                <label for="food_name">Food Name</label>
+                                <input type="text" class="form-control" id="food_name" name="food_name" placeholder="E.g., Chicken Breast" required>
+                            </div>
+                        </div>
+                        <div class="form-row align-items-end">
+                            <div class="form-group col-md-6">
+                                <label for="meal_type" class="form-label">Meal Type</label>
+                                <select class="form-control" id="meal_type" name="meal_type" required>
+                                    <option value="">Select Meal Type</option>
+                                    <option value="Breakfast">Breakfast</option>
+                                    <option value="Lunch">Lunch</option>
+                                    <option value="Dinner">Dinner</option>
+                                    <option value="Snacks">Snacks</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="intake_time" class="form-label">Time of Intake</label>
+                                <input type="time" class="form-control" id="intake_time" name="intake_time" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="calories">Calories (kj)</label>
+                                <input type="number" class="form-control" id="calories" name="calories" placeholder="E.g., 500" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <label for="protein">Protein (g)</label>
+                                <input type="number" class="form-control" id="protein" name="protein" placeholder="E.g., 30" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="carbohydrates">Carbohydrates (g)</label>
+                                <input type="number" class="form-control" id="carbohydrates" name="carbohydrates" placeholder="E.g., 40" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="fats">Fats (g)</label>
+                                <input type="number" class="form-control" id="fats" name="fats" placeholder="E.g., 20" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger" style="background: linear-gradient(45deg, #9b0000, #ff7b00); border: none;">Log Macros</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Macro History Table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>Your Macro History</h4>
+                </div>
+                <div class="card-body p-0"> <!-- Added p-0 to remove padding -->
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0"> <!-- Added mb-0 to remove margin-bottom -->
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><i class="fas fa-utensils"></i> Food Name</th>
+                                    <th><i class="fas fa-utensil-spoon"></i> Meal Type</th>
+                                    <th><i class="fas fa-drumstick-bite"></i> Protein (g)</th>
+                                    <th><i class="fas fa-bread-slice"></i> Carbohydrates (g)</th>
+                                    <th><i class="fas fa-egg"></i> Fats (g)</th>
+                                    <th><i class="fas fa-fire"></i> Calories (kj)</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if macro_records %}
+                                    {% for record in macro_records %}
+                                        <tr>
+                                            <td>{{ record.food_name }}</td>
+                                            <td>{{ record.meal_type }}</td>
+                                            <td>{{ record.protein }}</td>
+                                            <td>{{ record.carbohydrates }}</td>
+                                            <td>{{ record.fats }}</td>
+                                            <td>{{ record.calories }}</td>
+                                            <td>{{ record.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No macro records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Modern Sporty Styling -->
+<style>
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.1rem;
+        font-size: 3.5rem;
+        background: linear-gradient(45deg, #9b0000, #ff7b00); /* Stronger gradient red */
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .btn-danger {
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #ff7b00, #9b0000);
+        color: white;
+    }
+
+    /* Light Red Form Styling */
+    .form-control {
+        background-color: rgba(255, 123, 123, 0.2); /* Light red background for form inputs */
+        border: 1px solid #ff7b7b; /* Light red border for inputs */
+        color: black; /* Black text for inputs */
+        font-weight: 600;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: rgba(255, 123, 123, 0.3); /* Slightly darker red when focused */
+        border-color: #ff7b00; /* Orange-red border when focused */
+        box-shadow: 0 0 5px rgba(255, 123, 0, 0.5); /* Orange glow effect */
+    }
+
+    .form-label {
+        color: #9b0000; /* Dark red label text */
+        font-weight: 600;
+    }
+
+    /* Dark Reddish Table Styling */
+    .table {
+        border: 2px solid #9b0000; /* Dark red border around the table */
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        font-weight: 600;
+        border: 1px solid #ff7b7b; /* Light red border for cells */
+        background-color: rgba(155, 0, 0, 0.2); /* Dark reddish background for cells */
+        color: black; /* Black text for table cells */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(155, 0, 0, 0.3) !important; /* Slightly darker red on hover */
+    }
+
+    /* Table header with dark red background */
+    .thead-light th {
+        background-color: #9b0000; /* Dark red background for header */
+        color: white;
+        border-bottom: 2px solid #ff7b7b; /* Light red border for header */
+    }
+
+    /* Button Styling */
+    .btn-danger {
+        background: linear-gradient(45deg, #9b0000, #ff7b00);
+        border: none;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(45deg, #ff7b00, #9b0000);
+        color: white;
+    }
+
+    /* Tabs Styling (Based on Sleep Page but with Red-Orange Theme) */
+    .nav-tabs .nav-link.active {
+        background-color: #9b0000 !important; /* Dark red for active tab */
+        border-color: #9b0000 #9b0000 #ff7b00 !important; /* Dark red with orange borders */
+        color: white !important;
+        border-radius: 10px 10px 0 0; /* Round edges for active tab */
+    }
+
+    .nav-tabs .nav-link {
+        color: #9b0000 !important; /* Dark red text for inactive tabs */
+        border-color: #ff7b00 !important; /* Orange border for inactive tabs */
+        border-radius: 10px 10px 0 0; /* Round edges for inactive tabs */
+        background-color: rgba(155, 0, 0, 0.2); /* Dark reddish background for inactive tabs */
+        font-weight: 600;
+        padding: 10px 20px;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #ff7b00 !important; /* Orange background on hover */
+        color: white !important; /* White text on hover */
+    }
+
+    .tab-content {
+        border: 2px solid #9b0000; /* Dark red border for tab content */
+        border-radius: 0 10px 10px 10px;
+        padding: 20px;
+        background-color: rgba(255, 123, 123, 0.1); /* Light red background for tab content */
+    }
+
+    /* Add custom styling for form and alert components */
+    .alert {
+        padding: 15px;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    /* Form input hover effect */
+    .form-control:hover {
+        border-color: #ff7b00;
+    }
+
+    /* Ensure all text inside the form and macro history is black */
+    .form-group label,
+    .form-control,
+    .table td,
+    .table th {
+        color: black !important; /* Force black text */
+    }
+</style>
+
+<!-- Font Awesome (Add this in the <head> of your layout.html if not already included) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+{% endblock %}

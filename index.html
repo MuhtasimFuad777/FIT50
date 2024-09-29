@@ -1,0 +1,263 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Dashboard
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4 display-4 text-uppercase" style="font-weight: 800; color: #00ff88;">Health Dashboard</h1>
+
+    <div class="row mb-4">
+        <!-- BMI Chart Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-header bg-gradient-info text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(45deg, #00c9ff, #92fe9d);">
+                    <h5 class="mb-0" style="font-weight: 600;">BMI Over Time</h5>
+                    <i class="fas fa-chart-line" style="font-size: 1.6rem;"></i>
+                </div>
+                <div class="card-body">
+                    <canvas id="bmiChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Chart Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(45deg, #0072ff, #00c6ff);">
+                    <h5 class="mb-0" style="font-weight: 600;">Sleep Duration Over Time</h5>
+                    <i class="fas fa-bed" style="font-size: 1.6rem;"></i>
+                </div>
+                <div class="card-body">
+                    <canvas id="sleepChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <!-- Exercise History Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-header bg-gradient-warning text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(45deg, #fbc200, #ff9900);">
+                    <h5 class="mb-0" style="font-weight: 600;">Exercise History</h5>
+                    <i class="fas fa-dumbbell" style="font-size: 1.6rem;"></i>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><i class="fas fa-running"></i> Exercise</th>
+                                    <th><i class="fas fa-repeat"></i> Reps/Sets</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if exercise_records %}
+                                    {% for record in exercise_records %}
+                                        <tr class="table-hover-row">
+                                            <td>{{ record.exercise_name }} ({{ record.targeted_part }})</td>
+                                            <td>{{ record.reps }}x{{ record.sets }}</td>
+                                            <td>{{ record.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No exercise records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Macro Intake History Section -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-lg border-0" style="border-radius: 20px;">
+                <div class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center py-3" style="background: linear-gradient(45deg, #00c9a7, #00f276);">
+                    <h5 class="mb-0" style="font-weight: 600;">Macro Intake History</h5>
+                    <i class="fas fa-utensils" style="font-size: 1.6rem;"></i>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><i class="fas fa-drumstick-bite"></i> Food Name</th>
+                                    <th><i class="fas fa-utensils"></i> Meal Type</th>
+                                    <th><i class="fas fa-egg"></i> Protein (g)</th>
+                                    <th><i class="fas fa-bread-slice"></i> Carbs (g)</th>
+                                    <th><i class="fas fa-cheese"></i> Fats (g)</th>
+                                    <th><i class="fas fa-fire"></i> Calories (kj)</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if macro_records %}
+                                    {% for record in macro_records %}
+                                        <tr class="table-hover-row">
+                                            <td>{{ record.food_name }}</td>
+                                            <td>{{ record.meal_type }}</td>
+                                            <td>{{ record.protein }}</td>
+                                            <td>{{ record.carbohydrates }}</td>
+                                            <td>{{ record.fats }}</td>
+                                            <td>{{ record.calories }}</td>
+                                            <td>{{ record.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">No macro records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js Script -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // BMI Chart
+    const ctxBMI = document.getElementById('bmiChart').getContext('2d');
+    const bmiChart = new Chart(ctxBMI, {
+        type: 'line',
+        data: {
+            labels: {{ bmi_dates|tojson|safe }},
+            datasets: [{
+                label: 'BMI',
+                data: {{ bmi_values|tojson|safe }},
+                borderColor: 'rgba(0, 201, 136, 1)',
+                backgroundColor: 'rgba(0, 201, 136, 0.2)',
+                borderWidth: 4,
+                tension: 0.4,  // for smooth curves
+                pointRadius: 5,  // visible data points
+                pointBackgroundColor: 'rgba(0, 201, 136, 1)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#333',
+                        font: {
+                            family: 'Poppins',
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'BMI',
+                        color: '#333',
+                        font: {
+                            family: 'Poppins',
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    // Sleep Chart (Color based on quality)
+    const ctxSleep = document.getElementById('sleepChart').getContext('2d');
+
+    const sleepHours = {{ sleep_hours|tojson|safe }};
+    const sleepQuality = {{ sleep_quality|tojson|safe }}; // Array of quality values (1-3, for example)
+
+    const sleepColors = sleepQuality.map(quality => {
+        if (quality === 3) return 'rgba(0, 255, 0, 0.8)'; // Good sleep
+        if (quality === 2) return 'rgba(255, 255, 0, 0.8)'; // Fair sleep
+        else return 'rgba(255, 0, 0, 0.8)'; // Poor sleep
+    });
+
+    const sleepChart = new Chart(ctxSleep, {
+        type: 'bar',
+        data: {
+            labels: {{ sleep_dates|tojson|safe }},
+            datasets: [{
+                label: 'Hours of Sleep',
+                data: sleepHours,
+                backgroundColor: sleepColors,
+                borderColor: 'rgba(0, 114, 255, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date',
+                        color: '#333',
+                        font: {
+                            family: 'Poppins',
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Hours of Sleep',
+                        color: '#333',
+                        font: {
+                            family: 'Poppins',
+                            size: 14,
+                            weight: 'bold'
+                        }
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<!-- CSS for Modern Sporty Hover Effects -->
+<style>
+    .table-hover-row:hover {
+        background-color: #f1f3f6 !important;
+        cursor: pointer;
+        transform: scale(1.02);
+        transition: transform 0.2s ease-in-out;
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .card-header i {
+        font-size: 1.6rem;
+    }
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.1rem;
+    }
+    .card {
+        border-radius: 20px;
+        transition: box-shadow 0.3s ease;
+    }
+    .card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+{% endblock %}

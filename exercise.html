@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Exercise Log
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4 display-4" style="font-weight: 800; font-size: 3.5rem; background: linear-gradient(45deg, #ff8c00, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Exercise Log</h1>
+
+    <div class="row">
+        <!-- Exercise Form Column -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Log Your Exercises</h5>
+                    <i class="fas fa-dumbbell"></i>
+                </div>
+                <div class="card-body">
+                    <form action="/exercise" method="POST">
+                        <div class="mb-3">
+                            <label for="exercise_name" class="form-label">Exercise Name</label>
+                            <input type="text" class="form-control" id="exercise_name" name="exercise_name" required placeholder="E.g., Push-ups">
+                        </div>
+                        <div class="mb-3">
+                            <label for="targeted_part" class="form-label">Body Part Targeted</label>
+                            <input type="text" class="form-control" id="targeted_part" name="targeted_part" required placeholder="E.g., Chest">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="reps" class="form-label">Reps</label>
+                                <input type="number" class="form-control" id="reps" name="reps" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="sets" class="form-label">Sets</label>
+                                <input type="number" class="form-control" id="sets" name="sets" required>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="duration" class="form-label">Duration (min)</label>
+                                <input type="number" class="form-control" id="duration" name="duration" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-block">Log Exercise</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exercise History Table Column -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Exercise History</h5>
+                    <i class="fas fa-history"></i>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><i class="fas fa-running"></i> Exercise</th>
+                                    <th><i class="fas fa-user-md"></i> Targeted Part</th>
+                                    <th><i class="fas fa-sync-alt"></i> Reps</th>
+                                    <th><i class="fas fa-recycle"></i> Sets</th>
+                                    <th><i class="fas fa-clock"></i> Duration (min)</th>
+                                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if records %}
+                                    {% for record in records %}
+                                        <tr class="table-hover-row">
+                                            <td>{{ record.exercise_name }}</td>
+                                            <td>{{ record.targeted_part }}</td>
+                                            <td>{{ record.reps }}</td>
+                                            <td>{{ record.sets }}</td>
+                                            <td>{{ record.duration }}</td>
+                                            <td>{{ record.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No exercise records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Tab Styling and Modern Hover Effects -->
+<style>
+    /* Tabs Styling */
+    .nav-tabs .nav-link.active {
+        background-color: #ffd700 !important; /* Yellow for active tab */
+        border-color: #ffd700 #ffd700 #ff8c00 !important; /* Yellow with orange border */
+        color: white !important;
+        border-radius: 10px 10px 0 0; /* Rounded edges */
+    }
+
+    .nav-tabs .nav-link {
+        color: #ff8c00 !important; /* Orange text for inactive tabs */
+        border-color: #ffd700 !important; /* Yellow border for inactive tabs */
+        border-radius: 10px 10px 0 0;
+        background-color: rgba(255, 140, 0, 0.1); /* Light orange background for inactive tabs */
+        font-weight: 600;
+        padding: 10px 20px;
+    }
+
+    .nav-tabs .nav-link:hover {
+        background-color: #ff8c00 !important; /* Orange on hover */
+        color: white !important; /* White text on hover */
+    }
+
+    .tab-content {
+        border: 2px solid #ffd700; /* Yellow border for tab content */
+        border-radius: 0 10px 10px 10px;
+        padding: 20px;
+        background-color: rgba(255, 215, 0, 0.1); /* Light yellow background for tab content */
+    }
+
+    /* Light Yellowish Form Styling */
+    .form-control {
+        background-color: rgba(255, 255, 204, 0.3); /* Light yellow background */
+        border: 1px solid #ffd700; /* Yellow border */
+        color: black; /* Black text */
+        font-weight: 600;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        background-color: rgba(255, 255, 204, 0.4); /* Slightly darker yellow on focus */
+        border-color: #ff8c00; /* Orange border when focused */
+        box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    }
+
+    .form-label {
+        color: black; /* Black label text */
+        font-weight: 600;
+    }
+
+    /* Orange Table Styling */
+    .table {
+        border: 2px solid #ff8c00; /* Orange border */
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        font-weight: 600;
+        border: 1px solid #ffd700; /* Yellow border for cells */
+        background-color: rgba(255, 140, 0, 0.2); /* Light orange background for cells */
+        color: black; /* Black text */
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(255, 140, 0, 0.3) !important; /* Darker orange on hover */
+    }
+
+    .thead-light th {
+        background-color: #ff8c00; /* Orange header */
+        color: black; /* Black text for header */
+        border-bottom: 2px solid #ffd700; /* Yellow border for header */
+    }
+
+    /* Button Styling */
+    .btn-warning {
+        background-color: #ffc107; /* Yellow button */
+        border: none;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background-color: #e0a800; /* Darker yellow on hover */
+    }
+
+    /* Hover Effects for Table Rows */
+    .table-hover-row:hover {
+        background-color: rgba(255, 140, 0, 0.2) !important; /* Light orange on hover */
+        cursor: pointer;
+    }
+
+    /* Card Header Icon Size */
+    .card-header i {
+        font-size: 1.2rem;
+    }
+</style>
+
+{% endblock %}

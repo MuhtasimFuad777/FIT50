@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sleep History
+{% endblock %}
+
+{% block main %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4 display-4" style="font-weight: 800; background: linear-gradient(45deg, #006400, #98fb98); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Sleep History</h1>
+
+    <div class="row">
+        <!-- Sleep Log Form Column -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-lg" style="border-radius: 15px;">
+                <div class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center" style="border-radius: 15px 15px 0 0;">
+                    <h5 class="mb-0" style="font-weight: 600;">Log Your Sleep</h5>
+                    <i class="fas fa-bed" style="font-size: 1.5rem;"></i>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="/sleep">
+                        <div class="mb-3">
+                            <label for="sleep_hours" class="form-label" style="font-weight: 600;">Sleep Hours</label>
+                            <input type="number" step="0.1" name="sleep_hours" required class="form-control" id="sleep_hours" placeholder="Enter hours of sleep">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sleep_quality" class="form-label" style="font-weight: 600;">Sleep Quality</label>
+                            <select name="sleep_quality" required class="form-control" id="sleep_quality">
+                                <option value="1">Poor</option>
+                                <option value="2">Fair</option>
+                                <option value="3">Good</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label" style="font-weight: 600;">Date</label>
+                            <input type="date" name="date" required class="form-control" id="date">
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block" style="background: linear-gradient(45deg, #32cd32, #98fb98); border: none;">Log Sleep</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep History Table Column -->
+        <div class="col-md-6">
+            <div class="card shadow-lg" style="border-radius: 15px;">
+                <div class="card-header bg-gradient-success text-white d-flex justify-content-between align-items-center" style="border-radius: 15px 15px 0 0;">
+                    <h5 class="mb-0" style="font-weight: 600;">Sleep Records</h5>
+                    <i class="fas fa-history" style="font-size: 1.5rem;"></i>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th style="color: black;"><i class="fas fa-bed"></i> Sleep Hours</th>
+                                    <th style="color: black;"><i class="fas fa-star"></i> Sleep Quality</th>
+                                    <th style="color: black;"><i class="fas fa-calendar-alt"></i> Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if sleep_records %}
+                                    {% for record in sleep_records %}
+                                        <tr class="table-hover-row">
+                                            <td>{{ record.sleep_hours }}</td>
+                                            <td>{{ record.sleep_quality }}</td>
+                                            <td>{{ record.date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="3" class="text-center">No sleep records found.</td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Modern Sporty Styling -->
+<style>
+    h1 {
+        font-family: 'Poppins', sans-serif;
+        letter-spacing: 0.1rem;
+    }
+
+    .btn-success {
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(45deg, #006400, #32cd32);
+        color: white;
+    }
+
+    /* Hover effect for table rows */
+    .table-hover-row:hover {
+        background-color: rgba(50, 205, 50, 0.1) !important;
+        cursor: pointer;
+    }
+
+    /* Greenish Table Styling */
+    .table {
+        border: 2px solid #32cd32; /* Green border around the table */
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        font-weight: 600;
+        border: 1px solid #98fb98; /* Light greenish border for cells */
+        background-color: rgba(144, 238, 144, 0.2); /* Light greenish background for cells */
+        color: black; /* Set text color to black */
+    }
+
+    .table-hover-row:hover {
+        background-color: rgba(50, 205, 50, 0.2) !important; /* Slightly darker green on hover */
+    }
+
+    /* Table header with greenish background */
+    .thead-light th {
+        background-color: #32cd32; /* Match header green color */
+        color: black; /* Set header text color to black */
+        border-bottom: 2px solid #98fb98; /* Greenish border for header */
+    }
+
+    /* Form Styling */
+    .form-control {
+        background-color: rgba(144, 238, 144, 0.2); /* Very light green background for form inputs */
+        border: 1px solid #98fb98; /* Light green border for inputs */
+        color: #006400; /* Dark green text for contrast */
+        font-weight: 600;
+    }
+
+    .form-control:focus {
+        background-color: rgba(144, 238, 144, 0.3); /* Slightly darker green when focused */
+        border-color: #32cd32; /* Darker green border when focused */
+        box-shadow: 0 0 5px rgba(50, 205, 50, 0.5); /* Green glow effect */
+    }
+
+    .form-label {
+        color: #006400; /* Dark green label text */
+        font-weight: 600;
+    }
+
+    .card-header i {
+        font-size: 1.5rem;
+    }
+
+    /* Form button styling */
+    .btn-success {
+        background: linear-gradient(45deg, #32cd32, #98fb98);
+        border: none;
+        color: white;
+    }
+
+    /* Update card header colors */
+    .card-header {
+        background-color: #32cd32 !important; /* Greenish tone for card header */
+        border-radius: 15px 15px 0 0;
+        color: white;
+        font-weight: 600;
+    }
+
+    /* Optional: Update active tab if you have tab navigation */
+    .nav-tabs .nav-link.active {
+        background-color: #32cd32 !important; /* Active tab green color */
+        border-color: #32cd32 #32cd32 #98fb98 !important; /* Greenish borders */
+        color: white !important;
+    }
+
+    .nav-tabs .nav-link {
+        color: #006400 !important; /* Greenish text for inactive tabs */
+        border-color: #98fb98 !important; /* Light green border for inactive tabs */
+    }
+</style>
+
+{% endblock %}
